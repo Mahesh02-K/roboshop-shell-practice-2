@@ -1,7 +1,6 @@
 #!/bin/bash
 
 source ./common.sh
-
 verify_root
 
 cp mongo.repo /etc/yum.repos.d/mongodb.repo &>>$LOG_FILE
