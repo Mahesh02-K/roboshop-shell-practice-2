@@ -55,7 +55,7 @@ nodejs_install(){
     VERIFY $? "Enabling version:20 of nodejs"
 
     dnf install nodejs -y &>>$LOG_FILE
-    VALIDATE $? "Installing nodejs:20"
+    VERIFY $? "Installing nodejs:20"
 
     npm install &>>$LOG_FILE
     VERIFY $? "Installing Dependencies"
