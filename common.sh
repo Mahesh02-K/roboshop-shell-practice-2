@@ -15,20 +15,6 @@ SCRIPT_DIR=$PWD
 mkdir -p $LOGS_FOLDER
 echo "Script started executing at :: $(date)" | tee -a $LOG_FILE
 
-nodejs_install(){
-    dnf module disable nodejs -y &>>$LOG_FILE
-    VERIFY $? "Disabling default version of nodejs"
-
-    dnf module enable nodejs:20 -y &>>$LOG_FILE
-    VERIFY $? "Enabling version:20 of nodejs"
-
-    dnf install nodejs -y &>>$LOG_FILE
-    VALIDATE $? "Installing nodejs:20"
-
-    npm install &>>$LOG_FILE
-    VERIFY $? "Installing Dependencies"
-}
-
 app_setup(){
     id roboshop
     if [ $? -ne 0 ]
@@ -59,6 +45,39 @@ systemd_setup(){
     systemctl enable $app_name &>>$LOG_FILE
     systemctl start $app_name
     VERIFY $? "Starting $app_name"
+}
+
+nodejs_install(){
+    dnf module disable nodejs -y &>>$LOG_FILE
+    VERIFY $? "Disabling default version of nodejs"
+
+    dnf module enable nodejs:20 -y &>>$LOG_FILE
+    VERIFY $? "Enabling version:20 of nodejs"
+
+    dnf install nodejs -y &>>$LOG_FILE
+    VALIDATE $? "Installing nodejs:20"
+
+    npm install &>>$LOG_FILE
+    VERIFY $? "Installing Dependencies"
+}
+
+maven_install(){
+    dnf install maven -y &>>$LOG_FILE
+    VERIFY $? "Install Maven and Java"
+
+    mvn clean package &>>$LOG_FILE
+    VERIFY $? "Packaging in shipping application"
+
+    mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
+    VERIFY $? "Moving and renaming the jar file"
+}
+
+python_install(){
+    dnf install python3 gcc python3-devel -y &>>$LOG_FILE
+    VERIFY $? "Installing python3"
+
+    pip3 install -r requirements.txt &>>$LOG_FILE
+    VERIFY $? "Installing Dependancies"
 }
 
 verify_root(){
